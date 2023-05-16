@@ -7,24 +7,26 @@ package:
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/p/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: {{ hash }}
 
 build:
-  number: 0
-  script: python -m pip install . --no-deps --ignore-installed
+  number: 1
+  script: python -m pip install . --no-deps --no-build-isolation --ignore-installed
   noarch: python
 
 requirements:
   host:
-    - python >=3.6
+    - python
+    - pip
     - setuptools
     - setuptools_scm
-    - pip
-
+    - toml
+    - wheel
   run:
     - python >=3.6
+    # Workaround to explicitly define py, see https://github.com/pytest-dev/pytest-html/commit/00740f5e262c572b08000bbbc5f04faeb4e6d73c
+    - py >=1.8.2
     - pytest >=5.0,!=6.0.0
     - pytest-metadata
 
@@ -34,9 +36,14 @@ test:
 
 about:
   home: https://github.com/pytest-dev/pytest-html
+  dev_url: https://github.com/pytest-dev/pytest-html
+  doc_url: https://github.com/pytest-dev/pytest-html
   license: MPL-2.0
+  license_family: Other
   license_file: LICENSE
   summary: pytest plugin for generating HTML reports
+  description: |
+    pytest plugin for generating HTML reports
 
 extra:
   recipe-maintainers:
