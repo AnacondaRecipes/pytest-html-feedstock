@@ -1,19 +1,20 @@
 {% set name = "pytest-html" %}
-{% set version = "3.1.1" %}
-{% set hash = "3ee1cf319c913d19fe53aeb0bc400e7b0bc2dbeb477553733db1dad12eb75ee3" %}
+{% set version = "4.1.1" %}
+{% set hash = "70a01e8ae5800f4a074b56a4cb1025c8f4f9b038bba5fe31e3c98eb996686f07" %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/p/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/p/{{ name }}/pytest_html-{{ version }}.tar.gz
   sha256: {{ hash }}
 
 build:
-  number: 1
+  number: 0
   script: python -m pip install . --no-deps --no-build-isolation --ignore-installed
   noarch: python
+  skip: true  # [py<38]
 
 requirements:
   host:
@@ -23,12 +24,27 @@ requirements:
     - setuptools_scm
     - toml
     - wheel
+    - hatch-vcs >=0.3
+    - hatchling >=1.13
   run:
-    - python >=3.6
+    - python
     # Workaround to explicitly define py, see https://github.com/pytest-dev/pytest-html/commit/00740f5e262c572b08000bbbc5f04faeb4e6d73c
     - py >=1.8.2
-    - pytest >=5.0,!=6.0.0
-    - pytest-metadata
+    - pytest >=7.0.0
+    - pytest-metadata >=2.0.0
+    - jinja2 >=3.0.0
+  run_constrained:
+    - pip-tools >=6.13.0
+    - assertpy >=1.1
+    - beautifulsoup4 >=4.11.1
+    - black >=22.1.0
+    - flake8 >=4.0.1
+    - pre-commit >=2.17.0
+    - pytest-xdist >=2.4.0
+    - pytest-mock >=3.7.0
+    - pytest-rerunfailures >=11.1.2
+    - selenium >=4.3.0
+    - tox >=3.24.5
 
 test:
   imports:
@@ -44,6 +60,8 @@ about:
   summary: pytest plugin for generating HTML reports
   description: |
     pytest plugin for generating HTML reports
+
+
 
 extra:
   recipe-maintainers:
