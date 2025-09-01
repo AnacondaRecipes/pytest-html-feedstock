@@ -1,49 +1,56 @@
 {% set name = "pytest-html" %}
-{% set version = "3.1.1" %}
-{% set hash = "3ee1cf319c913d19fe53aeb0bc400e7b0bc2dbeb477553733db1dad12eb75ee3" %}
+{% set version = "4.1.1" %}
 
 package:
-  name: {{ name }}
+  name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/p/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ hash }}
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name|replace("-", "_") }}-{{ version }}.tar.gz
+  sha256: 70a01e8ae5800f4a074b56a4cb1025c8f4f9b038bba5fe31e3c98eb996686f07
 
 build:
-  number: 1
-  script: python -m pip install . --no-deps --no-build-isolation --ignore-installed
-  noarch: python
+  number: 0
+  skip: true  # [py<310]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed -vv
 
 requirements:
   host:
-    - python
     - pip
-    - setuptools
-    - setuptools_scm
-    - toml
-    - wheel
+    - python
+    - hatch-vcs >=0.3
+    - hatchling >=1.13
   run:
-    - python >=3.6
-    # Workaround to explicitly define py, see https://github.com/pytest-dev/pytest-html/commit/00740f5e262c572b08000bbbc5f04faeb4e6d73c
-    - py >=1.8.2
-    - pytest >=5.0,!=6.0.0
-    - pytest-metadata
+    - python
+    - jinja2 >=3.0.0
+    - pytest >=7.0.0
+    - pytest-metadata >=2.0.0
 
 test:
+  source_files:
+    - testing
+  requires:
+    - pip
+    - pytest
+    - bs4
+    - selenium
+    - assertpy
   imports:
     - pytest_html
+  commands:
+    - pip check
+    - pytest testing/test_unit.py -v
 
 about:
   home: https://github.com/pytest-dev/pytest-html
-  dev_url: https://github.com/pytest-dev/pytest-html
-  doc_url: https://github.com/pytest-dev/pytest-html
   license: MPL-2.0
   license_family: Other
   license_file: LICENSE
   summary: pytest plugin for generating HTML reports
   description: |
     pytest plugin for generating HTML reports
+  dev_url: https://github.com/pytest-dev/pytest-html
+  doc_url: https://github.com/pytest-dev/pytest-html
 
 extra:
   recipe-maintainers:
